@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Clientes XML Service</h1>
+    <label>Seleccione un cliente</label>
+    <select id="selectcliente"></select>
+    <div id="contenedor"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            let url = "https://apiclientesxml.azurewebsites.net/"
+            let request = "api/clientes/getclientesxml"
+            $.get(url + request, function(data){
+                console.log("Cargando clientes")
+                var html = "";
+                $(data).find("CLIENTE").each(function () {
+                    var id = $(this).attr("IDCLIENTE")
+                    var nombre = $(this).find("NOMBRE").text()
+                    html += "<option value='" + id + "'>";
+                    html += nombre + "</option>";
+                })
+                $("#selectcliente").html(html)
+            })
+
+            $("#selectcliente").change(function() {
+                let id = $("#selectcliente").val();
+                $("#contenedor").html("");
+                $.get(url + request, function(data) {
+                    console.log("Leyendo detalles")
+                    let filtro = "CLIENTE[IDCLIENTE=" + id + "]";
+                    var nodoCliente = $(data).find(filtro).first();
+                    var direccion = nodoCliente.find("DIRECCION").text();
+                    var imagen = nodoCliente.find("IMAGENCLIENTE").text();
+                    var titulo = $("<h1>", {"text": direccion})
+                    var img = $("<img>", {"src": imagen
+                    , "style": "width: 200px; height: 250px"})
+                    $("#contenedor").append(titulo);
+                    $("#contenedor").append(img);
+                })
+            })
+        })
+    </script>
+</body>
+</html>
