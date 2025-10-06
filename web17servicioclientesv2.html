@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Clientes XML Service V2</h1>
+    <div id="containerbotones"></div>
+    <hr/>
+    <div id="containercliente"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            let url = "https://apiclientesxml.azurewebsites.net/";
+            let requestAll = "api/clientes";
+            $.get(url + requestAll, function(data) {
+                $(data).find("Cliente").each(function() {
+                    var id = $(this).find("IdCliente").text();
+                    var nombre = $(this).find("Nombre").text();
+                    var boton = $("<button>"
+                        , {"text": nombre, "data-id": id, "value": id})
+                    $("#containerbotones").append(boton);
+                    boton.click(function() {
+                        //var idCliente = $(this).data("id");
+                        var idCliente = $(this).val();
+                        var request = "api/clientes/" + idCliente;
+                        $.get(url + request, function(data) {
+                            var imagen = $(data).find("Imagen").text();
+                            var pagWeb = $(data).find("PaginaWeb").text();
+                            var html = "<h1 style='color:blue'>"
+                                + pagWeb + "</h1>";
+                            html += "<img src='" + imagen + "'/>";
+                            $("#containercliente").html(html);
+                        })
+                    })
+                })
+            })
+        })
+    </script>
+</body>
+</html>
