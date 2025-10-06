@@ -28,11 +28,18 @@
                     var filtro = "LOC:contains(" + localidad + ")";
                     //SON VARIOS ELEMENTOS LOS QUE PODRIA DEVOLVER (each)
                     var html = "";
-                    $(data).find(filtro).each(function() {
-                        var cosa = $(this).text();
-                        html += "<li>" + cosa + "</li>";
-                    })
-                    $("#listadepartamentos").html(html);
+                    if ($(data).find(filtro).length == 0){
+                        $("#mensaje").text("No existe la localidad: " + localidad);
+                    }else{
+                        $(data).find(filtro).each(function() {
+                            var nodopadre = $(this).parent();
+                            var id = nodopadre.attr("DEPT_NO");
+                            var nombre = nodopadre.find("DNOMBRE").first().text();
+                            html += "<li>" + id + ", nombre: " + nombre + "</li>";
+                        })
+                        $("#listadepartamentos").html(html);
+                    }
+
                 })
             })
 
