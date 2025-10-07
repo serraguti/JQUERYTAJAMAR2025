@@ -16,29 +16,30 @@
             $.getJSON("documents/jugadores.json", function(data) {
                 $.each(data.jugadores, function(index, player) {
                     var nombre = player.nombre;
-                    var option = $("<option>", {"text": nombre});
+                    var option = $("<option>"
+                        , {"text": nombre
+                        , "value": index});
                     $("#selectjugador").append(option);
                 })
             })
 
             $("#selectjugador").change(function() {
-                var name = $("#selectjugador").val();
+                //var index = $("#selectjugador").val();
+                var index = $("#selectjugador").prop("selectedIndex");
                 $.ajax({
                     url: "documents/jugadores.json", 
                     type: "GET", 
                     dataType: "json", 
                     success: function(data){
                         var html = "";
-                        $.each(data.jugadores, function(index, player) {
-                            var playerName = player.nombre;
-                            if (playerName == name){
-                                var posicion = player.posicion;
-                                var imagen = player.imagen;
-                                html += "<h1>" + playerName + "</h1>";
-                                html += "<p>Posición: " + posicion + "</p>";
-                                html += "<img src='" + imagen + "'/>";
-                            }
-                        })
+                        var player = data.jugadores[index];
+                        var name = player.nombre;
+                        var posicion = player.posicion;
+                        var imagen = player.imagen;
+                        html += "<h1>" + name + "</h1>";
+                        html += "<p>Posición: " + posicion + "</p>";
+                        html += "<img src='" + imagen + "' style='width: 200px; height: 200px'/>";
+                        
                         $("#containerjugador").html(html);
                     }
                 })
