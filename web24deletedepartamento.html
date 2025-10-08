@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Delete departamentos</h1>
+    <ul id="listadepartamentos"></ul>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        let url = "https://apicruddepartamentospgs.azurewebsites.net/";
+        $(document).ready(function() {
+            loadDepartamentos();
+        })
+
+        function loadDepartamentos() {
+            let request = "webresources/departamentos";
+            $("#listadepartamentos").html("");
+            $.ajax({
+                url: url + request, 
+                type: "GET", 
+                success: function(data){
+                    $.each(data, function(index, departamento){
+                        var li = $("<li>", {"text": departamento.nombre});
+                        var boton = $("<button>"
+                            , {"text": "Delete " + departamento.localidad, 
+                            "value": departamento.numero});
+                        li.append(boton);
+                        $("#listadepartamentos").append(li);
+                        
+                        boton.click(function() {
+                            let id = $(this).val();
+                            console.log("Leyendo " + id);
+                            let requestDelete = "webresources/departamentos/delete/"
+                            + id;
+                            $.ajax({
+                                url: url + requestDelete,
+                                type: "DELETE", 
+                                success: function() {
+                                    console.log("Eliminado...");
+                                    loadDepartamentos();
+                                }
+                            })
+                        })
+                    })
+                }
+            })
+        }
+    </script>
+</body>
+</html>
