@@ -200,7 +200,28 @@
     <script>
         let url = "https://apicrudhospital.azurewebsites.net/";
         $(document).ready(function() {
-            let request = "webresources/hospitales";
+            //CODIGO DE ELIMINAR DEBE ESTAR ANTES DE DIBUJAR...
+            var params = new window.URLSearchParams(window.location.search);
+            var idDelete = params.get('iddelete');
+            console.log("Delete: " + idDelete);
+            //TRISTE IF PARA VER SI TENEMOS DATOS
+            if (idDelete != null){
+                var requestDelete = "webresources/hospitales/delete/" + idDelete;
+                $.ajax({
+                    url: url + requestDelete, 
+                    type: "DELETE", 
+                    success: function() {
+                        console.log("Eliminando hospital: " + idDelete);
+                        loadHospitales();
+                    }
+                })
+            }else {
+                loadHospitales();
+            }
+        })
+
+        function loadHospitales() {
+                        let request = "webresources/hospitales";
             $.ajax({
                 url: url + request, 
                 type: "GET",
@@ -217,13 +238,15 @@
                         + hospital.idhospital + "' class='btn btn-success'>Details</a>";
                         html += "<a href='web28edithospital.html?idhospital="
                         + hospital.idhospital + "' class='btn btn-info'>Edit</a>";
+                        html += "<a href='web28homehospitales.html?iddelete="
+                        + hospital.idhospital + "' class='btn btn-danger'>Delete</a>"
                         html += "</td>";
                         html += "</tr>";
                     })
                     $("#tablahospitales tbody").html(html);
                 }
             })
-        })
+        }
     </script>
 </body>
 </html>

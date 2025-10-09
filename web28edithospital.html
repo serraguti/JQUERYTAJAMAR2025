@@ -182,13 +182,67 @@
     <main class="container">
         <div class="bg-body-tertiary p-5 rounded">
             <h1>Edit hospital</h1>
+            <input type="hidden" id="cajaid"/>
+            <label>Nombre</label>
+            <input type="text" id="cajanombre" class="form-control"/><br/>
+            <label>Dirección</label>
+            <input type="text" id="cajadireccion" class="form-control"/><br/>
+            <label>Teléfono</label>
+            <input type="text" id="cajatelefono" class="form-control"/><br/>
+            <label>Camas</label>
+            <input type="text" id="cajacamas" class="form-control"/><br/>
+            <button id="botonmodificar" class="btn btn-info">Update</button>
         </div>
     </main>
     <script src="js/bootstrap.bundle.js"></script>
     <script src="js/jquery-3.7.1.js"></script>
     <script>
+        let url = "https://apicrudhospital.azurewebsites.net/";
         $(document).ready(function() {
-            
+            $("#botonmodificar").click(function() {
+                var id = parseInt($("#cajaid").val());
+                var nombre = $("#cajanombre").val();
+                var direccion = $("#cajadireccion").val();
+                var telefono = $("#cajatelefono").val();
+                var camas = parseInt($("#cajacamas").val());
+                var hospital = new Object();
+                hospital.idhospital = id;
+                hospital.nombre = nombre;
+                hospital.direccion = direccion;
+                hospital.telefono = telefono;
+                hospital.camas = camas;
+                var hospitalJSON = JSON.stringify(hospital);
+                console.log(hospitalJSON);
+                var requestPut = "webresources/hospitales/put";
+                $.ajax({
+                    url: url + requestPut,
+                    type: "PUT", 
+                    contentType: "application/json", 
+                    data: hospitalJSON, 
+                    success: function(){
+                        console.log("Updated");
+                        window.location.href = 
+                        'web28detailshospital.html?idhospital=' + id
+                    }
+                })
+            })
+
+            var params = new window.URLSearchParams(window.location.search);
+            var idHospital = params.get("idhospital");
+            console.log("Id: " + idHospital);
+            var requestFind = "webresources/hospitales/" + idHospital;
+            $.ajax({
+                url: url + requestFind, 
+                type: "GET",
+                success: function(data){
+                    console.log("Leyendo hospital")
+                    $("#cajaid").val(data.idhospital);
+                    $("#cajanombre").val(data.nombre);
+                    $("#cajadireccion").val(data.direccion);
+                    $("#cajatelefono").val(data.telefono);
+                    $("#cajacamas").val(data.camas);
+                }
+            })
         })
     </script>
 </body>
